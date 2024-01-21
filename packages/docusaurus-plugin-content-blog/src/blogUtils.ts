@@ -65,12 +65,14 @@ export function paginateBlogPosts({
   blogTitle,
   blogDescription,
   postsPerPageOption,
+  pageBasePath,
 }: {
   blogPosts: BlogPost[];
   basePageUrl: string;
   blogTitle: string;
   blogDescription: string;
   postsPerPageOption: number | 'ALL';
+  pageBasePath: string;
 }): BlogPaginated[] {
   const totalCount = blogPosts.length;
   const postsPerPage =
@@ -81,7 +83,7 @@ export function paginateBlogPosts({
 
   function permalink(page: number) {
     return page > 0
-      ? normalizeUrl([basePageUrl, `page/${page + 1}`])
+      ? normalizeUrl([basePageUrl, `${pageBasePath}/${page + 1}`])
       : basePageUrl;
   }
 
@@ -119,6 +121,7 @@ export function getBlogTags({
   blogTitle: string;
   blogDescription: string;
   postsPerPageOption: number | 'ALL';
+  pageBasePath: string;
 }): BlogTags {
   const groups = groupTaggedItems(
     blogPosts,

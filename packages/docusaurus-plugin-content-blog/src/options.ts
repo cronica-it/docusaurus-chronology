@@ -45,6 +45,7 @@ export const DEFAULT_OPTIONS: PluginOptions = {
   routeBasePath: 'blog',
   tagsBasePath: 'tags',
   archiveBasePath: 'archive',
+  pageBasePath: 'page',
   path: 'blog',
   editLocalizedFiles: false,
   authorsMapPath: 'authors.yml',
@@ -61,6 +62,7 @@ const PluginOptionSchema = Joi.object<PluginOptions>({
     .allow(null),
   routeBasePath: RouteBasePathSchema.default(DEFAULT_OPTIONS.routeBasePath),
   tagsBasePath: Joi.string().default(DEFAULT_OPTIONS.tagsBasePath),
+  pageBasePath: Joi.string().default(DEFAULT_OPTIONS.pageBasePath),
   include: Joi.array().items(Joi.string()).default(DEFAULT_OPTIONS.include),
   exclude: Joi.array().items(Joi.string()).default(DEFAULT_OPTIONS.exclude),
   postsPerPage: Joi.alternatives()

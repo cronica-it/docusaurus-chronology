@@ -108,6 +108,7 @@ export default async function pluginContentBlog(
         blogDescription,
         blogTitle,
         blogSidebarTitle,
+        pageBasePath,
       } = options;
 
       const baseBlogUrl = normalizeUrl([baseUrl, routeBasePath]);
@@ -159,6 +160,7 @@ export default async function pluginContentBlog(
         blogDescription,
         postsPerPageOption,
         basePageUrl: baseBlogUrl,
+        pageBasePath,
       });
 
       const blogTags: BlogTags = getBlogTags({
@@ -166,6 +168,7 @@ export default async function pluginContentBlog(
         postsPerPageOption,
         blogDescription,
         blogTitle,
+        pageBasePath,
       });
 
       return {
