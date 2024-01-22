@@ -339,10 +339,10 @@ async function processBlogSourceFile(
   );
 
   // For debug purposes only, disable for production.
-  if (lastUpdate.lastUpdatedAt) {
-    const dateOut = new Date(lastUpdate.lastUpdatedAt * 1000).toISOString();
-    logger.info(`${dateOut} ${blogSourceAbsolute}`);
-  }
+  // if (lastUpdate.lastUpdatedAt) {
+  //   const dateOut = new Date(lastUpdate.lastUpdatedAt * 1000).toISOString();
+  //   logger.info(`${dateOut} ${blogSourceAbsolute}`);
+  // }
 
   const aliasedSource = aliasedSitePath(blogSourceAbsolute, siteDir);
 
