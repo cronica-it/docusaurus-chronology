@@ -165,6 +165,16 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
 
     /** Allows overriding the last updated author and/or date. */
     last_update?: FileChange;
+
+    /**
+     * Event date, a string formatted as YYYY, YYYY-MM or YYYY-MM-DD.
+     */
+    event_date?: string;
+    /**
+     * Event end date, a string formatted as YYYY, YYYY-MM or YYYY-MM-DD.
+     * (for example for conferences)
+     */
+    event_end_date?: string;
   };
 
   export type BlogPostFrontMatterAuthor = Author & {
@@ -263,6 +273,27 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
      * Marks the post as unlisted and visibly hides it unless directly accessed.
      */
     readonly unlisted: boolean;
+    /**
+     * The `event_date` in binary.
+     */
+    readonly eventDate?: Date;
+    /**
+     * The `event_end_date` in binary.
+     */
+    readonly eventEndDate?: Date;
+    /**
+     * The `event_date` formatted according to locales.
+     */
+    readonly eventDateFormatted?: string;
+    /**
+     * The `event_date` formatted according to locales,
+     * possibly without year.
+     */
+    readonly eventDateFormattedForArchive?: string;
+    /**
+     * The event interval formatted according to locales.
+     */
+    readonly eventRangeFormatted?: string;
 
     /** Thee event/post year, for archive grouping. */
     readonly yearForArchive: string;
@@ -458,6 +489,8 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
     showLastUpdateTime?: boolean;
     /** Whether to display the author who last updated the doc. */
     showLastUpdateAuthor?: boolean;
+    /**	Whether to sort posts by `event_date`. */
+    sortPostsByEventDate?: boolean;
     /** Whether to do not show redundant year in Archive grouping. */
     hidePostYearInArchive?: boolean;
   };
@@ -554,6 +587,11 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
     {
       /** The publish date of the post. Serialized from the `Date` object. */
       date: string;
+
+      /** The event date of the post. Serialized from the `Date` object. */
+      eventDate: string;
+      /** The event end date of the post. Serialized from the `Date` object. */
+      eventEndDate: string;
     }
   >;
 

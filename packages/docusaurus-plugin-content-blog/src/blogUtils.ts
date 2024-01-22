@@ -30,6 +30,11 @@ import {
 } from '@docusaurus/utils';
 import {validateBlogPostFrontMatter} from './frontMatter';
 import {type AuthorsMap, getAuthorsMap, getBlogPostAuthors} from './authors';
+import {blogDateComparator} from './blogDateComparators';
+import {
+  type ParsedEventDates,
+  parseFrontMatterEventDates,
+} from './frontMatterEventDates';
 import type {LoadContext, ParseFrontMatter} from '@docusaurus/types';
 import type {
   PluginOptions,
@@ -367,6 +372,10 @@ async function processBlogSourceFile(
   ]);
   const authors = getBlogPostAuthors({authorsMap, frontMatter, baseUrl});
 
+  const parsedEventDates: ParsedEventDates = options.sortPostsByEventDate
+    ? parseFrontMatterEventDates({frontMatter, context, options})
+    : ({} as ParsedEventDates);
+
   const formattedDateForArchive = formatBlogPostDate({
     locale: i18n.currentLocale,
     date: postDate,
@@ -374,7 +383,11 @@ async function processBlogSourceFile(
     hideYear: options.hidePostYearInArchive,
   });
 
-  const yearForArchive: string = postDate.getUTCFullYear().toString();
+  const yearForArchive: string = (
+    parsedEventDates.eventDate ? parsedEventDates.eventDate : postDate
+  )
+    .getUTCFullYear()
+    .toString();
 
   return {
     id: slug,
@@ -387,7 +400,9 @@ async function processBlogSourceFile(
       date: postDate,
       formattedDate,
       yearForArchive,
-      formattedDateForArchive,
+      formattedDateForArchive: parsedEventDates.eventDate
+        ? (parsedEventDates.eventDateFormattedForArchive as string)
+        : formattedDateForArchive,
       tags: normalizeFrontMatterTags(tagsBasePath, frontMatter.tags),
       readingTime: showReadingTime
         ? options.readingTime({
@@ -409,6 +424,12 @@ async function processBlogSourceFile(
             calendar: i18n.localeConfigs[i18n.currentLocale]!.calendar,
           })
         : undefined,
+      eventDate: parsedEventDates.eventDate,
+      eventEndDate: parsedEventDates.eventEndDate,
+      eventDateFormatted: parsedEventDates.eventDateFormatted,
+      eventDateFormattedForArchive:
+        parsedEventDates.eventDateFormattedForArchive,
+      eventRangeFormatted: parsedEventDates.eventRangeFormatted,
     },
     content,
   };
@@ -497,9 +518,7 @@ export async function generateBlogPosts(
     await Promise.all(blogSourceFiles.map(doProcessBlogSourceFile))
   ).filter(Boolean) as BlogPost[];
 
-  blogPosts.sort(
-    (a, b) => b.metadata.date.getTime() - a.metadata.date.getTime(),
-  );
+  blogPosts.sort(blogDateComparator);
 
   if (options.sortPosts === 'ascending') {
     return blogPosts.reverse();

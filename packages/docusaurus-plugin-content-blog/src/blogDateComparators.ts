@@ -30,3 +30,39 @@ export const blogDateNewestComparator = (a: BlogPost, b: BlogPost): number => {
 
   return compareDates(a.metadata.date, b.metadata.date);
 };
+
+export const blogDateComparator = (a: BlogPost, b: BlogPost): number => {
+  // If event dates are available, prefer them over post creation dates.
+  if (a.metadata.eventDate || b.metadata.eventDate) {
+    let aDate: Date = a.metadata.eventDate
+      ? a.metadata.eventDate
+      : a.metadata.date;
+    let bDate: Date = b.metadata.eventDate
+      ? b.metadata.eventDate
+      : b.metadata.date;
+
+    let value: number = compareDates(aDate, bDate);
+    if (value !== 0) {
+      return value;
+    }
+
+    // For identical event dates, use event end dates if available,
+    // use them as secondary criteria.
+    if (a.metadata.eventEndDate || b.metadata.eventEndDate) {
+      if (a.metadata.eventEndDate) {
+        aDate = a.metadata.eventEndDate;
+      }
+      if (b.metadata.eventEndDate) {
+        bDate = b.metadata.eventEndDate;
+      }
+
+      value = compareDates(aDate, bDate);
+      if (value !== 0) {
+        return value;
+      }
+    }
+    // If all are the same, fall through and compare posts creation dates.
+  }
+
+  return compareDates(a.metadata.date, b.metadata.date);
+};

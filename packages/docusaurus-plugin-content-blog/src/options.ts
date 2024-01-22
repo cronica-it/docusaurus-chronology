@@ -53,6 +53,7 @@ export const DEFAULT_OPTIONS: PluginOptions = {
   sortPosts: 'descending',
   showLastUpdateTime: false,
   showLastUpdateAuthor: false,
+  sortPostsByEventDate: false,
   hidePostYearInArchive: false,
 };
 
@@ -140,6 +141,9 @@ const PluginOptionSchema = Joi.object<PluginOptions>({
   showLastUpdateTime: Joi.bool().default(DEFAULT_OPTIONS.showLastUpdateTime),
   showLastUpdateAuthor: Joi.bool().default(
     DEFAULT_OPTIONS.showLastUpdateAuthor,
+  ),
+  sortPostsByEventDate: Joi.bool().default(
+    DEFAULT_OPTIONS.sortPostsByEventDate,
   ),
   hidePostYearInArchive: Joi.bool().default(
     DEFAULT_OPTIONS.hidePostYearInArchive,
