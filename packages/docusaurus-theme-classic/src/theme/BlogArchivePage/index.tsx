@@ -28,7 +28,10 @@ function Year({year, posts}: YearProp) {
         {posts.map((post) => (
           <li key={post.metadata.date}>
             <Link to={post.metadata.permalink}>
-              {post.metadata.formattedDate} - {post.metadata.title}
+              {post.metadata.formattedDateForArchive && (
+                <>{post.metadata.formattedDateForArchive} - </>
+              )}
+              {post.metadata.title}
             </Link>
           </li>
         ))}
@@ -55,7 +58,7 @@ function YearsSection({years}: {years: YearProp[]}) {
 
 function listPostsByYears(blogPosts: readonly ArchiveBlogPost[]): YearProp[] {
   const postsByYear = blogPosts.reduce((posts, post) => {
-    const year = post.metadata.date.split('-')[0]!;
+    const year = post.metadata.yearForArchive;
     const yearPosts = posts.get(year) ?? [];
     return posts.set(year, [post, ...yearPosts]);
   }, new Map<string, ArchiveBlogPost[]>());

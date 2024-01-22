@@ -172,16 +172,22 @@ export function parseBlogFileName(
   return {date: undefined, text, slug};
 }
 
-function formatBlogPostDate(
-  locale: string,
-  date: Date,
-  calendar: string,
-): string {
+function formatBlogPostDate({
+  locale,
+  date,
+  calendar,
+  hideYear,
+}: {
+  locale: string;
+  date: Date;
+  calendar: string;
+  hideYear?: boolean;
+}): string {
   try {
     return new Intl.DateTimeFormat(locale, {
       day: 'numeric',
       month: 'long',
-      year: 'numeric',
+      year: hideYear ? undefined : 'numeric',
       timeZone: 'UTC',
       calendar,
     }).format(date);
@@ -311,11 +317,11 @@ async function processBlogSourceFile(
   }
 
   const postDate = await getDate();
-  const formattedDate = formatBlogPostDate(
-    i18n.currentLocale,
-    postDate,
-    i18n.localeConfigs[i18n.currentLocale]!.calendar,
-  );
+  const formattedDate = formatBlogPostDate({
+    locale: i18n.currentLocale,
+    date: postDate,
+    calendar: i18n.localeConfigs[i18n.currentLocale]!.calendar,
+  });
 
   const title = frontMatter.title ?? contentTitle ?? parsedBlogFileName.text;
   const description = frontMatter.description ?? excerpt ?? '';
@@ -361,20 +367,14 @@ async function processBlogSourceFile(
   ]);
   const authors = getBlogPostAuthors({authorsMap, frontMatter, baseUrl});
 
-  const formatDate = (locale: string, date: Date, calendar: string): string => {
-    try {
-      return new Intl.DateTimeFormat(locale, {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        timeZone: 'UTC',
-        calendar,
-      }).format(date);
-    } catch (err) {
-      logger.error`Can't format docs lastUpdatedAt date "${String(date)}"`;
-      throw err;
-    }
-  };
+  const formattedDateForArchive = formatBlogPostDate({
+    locale: i18n.currentLocale,
+    date: postDate,
+    calendar: i18n.localeConfigs[i18n.currentLocale]!.calendar,
+    hideYear: options.hidePostYearInArchive,
+  });
+
+  const yearForArchive: string = postDate.getUTCFullYear().toString();
 
   return {
     id: slug,
@@ -386,6 +386,8 @@ async function processBlogSourceFile(
       description,
       date: postDate,
       formattedDate,
+      yearForArchive,
+      formattedDateForArchive,
       tags: normalizeFrontMatterTags(tagsBasePath, frontMatter.tags),
       readingTime: showReadingTime
         ? options.readingTime({
@@ -401,11 +403,11 @@ async function processBlogSourceFile(
       lastUpdatedBy: lastUpdate.lastUpdatedBy,
       lastUpdatedAt: lastUpdate.lastUpdatedAt,
       formattedLastUpdatedAt: lastUpdate.lastUpdatedAt
-        ? formatDate(
-            i18n.currentLocale,
-            new Date(lastUpdate.lastUpdatedAt * 1000),
-            i18n.localeConfigs[i18n.currentLocale]!.calendar,
-          )
+        ? formatBlogPostDate({
+            locale: i18n.currentLocale,
+            date: new Date(lastUpdate.lastUpdatedAt * 1000),
+            calendar: i18n.localeConfigs[i18n.currentLocale]!.calendar,
+          })
         : undefined,
     },
     content,

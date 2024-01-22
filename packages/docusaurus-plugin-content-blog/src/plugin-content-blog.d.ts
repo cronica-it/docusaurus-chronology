@@ -215,6 +215,12 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
      * render the date regardless of the existence of `Intl.DateTimeFormat`.
      */
     readonly formattedDate: string;
+    /**
+     * Publish date formatted according to the locale,
+     * possibly without the year part, so that the client can
+     * render the date regardless of the existence of `Intl.DateTimeFormat`.
+     */
+    readonly formattedDateForArchive: string;
     /** Full link including base URL. */
     readonly permalink: string;
     /**
@@ -257,6 +263,9 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
      * Marks the post as unlisted and visibly hides it unless directly accessed.
      */
     readonly unlisted: boolean;
+
+    /** Thee event/post year, for archive grouping. */
+    readonly yearForArchive: string;
   };
   /**
    * @returns The edit URL that's directly plugged into metadata.
@@ -449,6 +458,8 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
     showLastUpdateTime?: boolean;
     /** Whether to display the author who last updated the doc. */
     showLastUpdateAuthor?: boolean;
+    /** Whether to do not show redundant year in Archive grouping. */
+    hidePostYearInArchive?: boolean;
   };
 
   /**

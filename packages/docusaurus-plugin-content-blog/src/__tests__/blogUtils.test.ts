@@ -214,6 +214,7 @@ describe('linkify', () => {
         frontMatter: {},
         authors: [],
         formattedDate: '',
+        formattedDateForArchive: '',
       },
       content: '',
     },
