@@ -132,7 +132,7 @@ export default async function pluginContentBlog(
       // date, to be used in feeds and in a separate web page.
       const blogPostsNewest = [...blogPosts].sort(blogDateNewestComparator);
 
-      // Colocate next and prev metadata.
+      // Collocate next and prev metadata.
       listedBlogPosts.forEach((blogPost, index) => {
         const prevItem = index > 0 ? listedBlogPosts[index - 1] : null;
         if (prevItem) {
