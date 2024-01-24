@@ -250,6 +250,9 @@ export default async function createConfigAsync() {
           postsPerPage: 20,
           archiveBasePath: null,
           authorsMapPath: 'authors.json',
+          // mine!
+          generateAuthorsPages: true,
+          // ---
           feedOptions: {
             type: 'all',
             title: 'Docusaurus changelog',
@@ -455,6 +458,14 @@ export default async function createConfigAsync() {
             },
             blogSidebarCount: 'ALL',
             blogSidebarTitle: 'All our posts',
+            // mine!
+            showLastUpdateAuthor: true,
+            showLastUpdateTime: true,
+            pageBasePath: 'pages',
+            hidePostYearInArchive: true,
+            sortPostsByEventDate: true,
+            generateAuthorsPages: true,
+            // ---
           } satisfies BlogOptions,
           pages: {
             remarkPlugins: [npm2yarn],
@@ -562,7 +573,29 @@ export default async function createConfigAsync() {
             sidebarId: 'api',
             label: 'API',
           },
-          {to: 'blog', label: 'Blog', position: 'left'},
+          {
+            to: 'blog',
+            label: 'Blog',
+            position: 'left',
+            items: [
+              {
+                label: 'Archive',
+                to: '/blog/archive',
+              },
+              {
+                label: 'Tags',
+                to: '/blog/tags',
+              },
+              {
+                label: 'Authors',
+                to: '/blog/authors',
+              },
+              {
+                label: 'All',
+                to: '/blog',
+              },
+            ],
+          },
           {to: 'showcase', label: 'Showcase', position: 'left'},
           {
             to: '/community/support',
