@@ -22,11 +22,15 @@ import {
   Globby,
   normalizeFrontMatterTags,
   groupTaggedItems,
+  groupAuthoredItems,
   getTagVisibility,
+  getAuthorVisibility,
   getFileCommitDate,
   getContentPathList,
   isUnlisted,
   isDraft,
+  makePermalinkFromAuthorName,
+  normalizeFrontMatterNamedAuthors,
 } from '@docusaurus/utils';
 import {validateBlogPostFrontMatter} from './frontMatter';
 import {type AuthorsMap, getAuthorsMap, getBlogPostAuthors} from './authors';
@@ -35,6 +39,7 @@ import {
   type ParsedEventDates,
   parseFrontMatterEventDates,
 } from './frontMatterEventDates';
+import type {NamedAuthor, Tag} from '@docusaurus/utils';
 import type {LoadContext, ParseFrontMatter} from '@docusaurus/types';
 import type {
   PluginOptions,
@@ -44,6 +49,8 @@ import type {
   BlogPaginated,
   LastUpdateData,
   FileChange,
+  BlogNamedAuthors,
+  Author,
 } from '@docusaurus/plugin-content-blog';
 import type {BlogContentPaths, BlogMarkdownLoaderOptions} from './types';
 
@@ -151,6 +158,61 @@ export function getBlogTags({
   });
 }
 
+function filterNamedAuthors(authors: Author[]): NamedAuthor[] {
+  const namedAuthors: NamedAuthor[] = [];
+
+  authors.forEach((author) => {
+    if (author.name !== undefined && author.name.length > 0) {
+      const permalink = makePermalinkFromAuthorName(author.name as string);
+      if (permalink.length > 0) {
+        namedAuthors.push({
+          name: author.name,
+          permalink,
+        });
+      }
+    }
+  });
+
+  // logger.info(namedAuthors);
+  return namedAuthors;
+}
+
+export function getBlogNamedAuthors({
+  blogPosts,
+  ...params
+}: {
+  blogPosts: BlogPost[];
+  blogTitle: string;
+  blogDescription: string;
+  postsPerPageOption: number | 'ALL';
+  pageBasePath: string;
+}): BlogNamedAuthors {
+  const getPostNamedAuthors = (blogPost: BlogPost) =>
+    blogPost.metadata.namedAuthors;
+
+  const groups = groupAuthoredItems(blogPosts, getPostNamedAuthors);
+
+  return _.mapValues(groups, ({author, items: authorBlogPosts}) => {
+    const authorVisibility = getAuthorVisibility({
+      items: authorBlogPosts,
+      isUnlisted: (item: BlogPost) => item.metadata.unlisted,
+    });
+    return {
+      name: author.name,
+      items: authorVisibility.listedItems.map((item: BlogPost) => item.id),
+      permalink: author.permalink,
+      pages: author.permalink
+        ? paginateBlogPosts({
+            blogPosts: authorVisibility.listedItems,
+            basePageUrl: author.permalink,
+            ...params,
+          })
+        : [],
+      unlisted: authorVisibility.unlisted,
+    };
+  });
+}
+
 const DATE_FILENAME_REGEX =
   /^(?<folder>.*)(?<date>\d{4}[-/]\d{1,2}[-/]\d{1,2})[-/]?(?<text>.*?)(?:\/index)?.mdx?$/;
 
@@ -248,6 +310,7 @@ async function processBlogSourceFile(
   const {
     routeBasePath,
     tagsBasePath: tagsRouteBasePath,
+    authorsBasePath: authorsRouteBasePath,
     truncateMarker,
     showReadingTime,
     editUrl,
@@ -365,12 +428,36 @@ async function processBlogSourceFile(
     return undefined;
   }
 
+  // logger.info(`processBlogSourceFile ${blogSourceRelative}`);
+
   const tagsBasePath = normalizeUrl([
     baseUrl,
     routeBasePath,
     tagsRouteBasePath,
   ]);
+
+  const tags: Tag[] = normalizeFrontMatterTags(tagsBasePath, frontMatter.tags);
+
+  // tags.forEach((t) => logger.info(t));
+
+  const authorsBasePath = normalizeUrl([
+    baseUrl,
+    routeBasePath,
+    authorsRouteBasePath,
+  ]);
+
   const authors = getBlogPostAuthors({authorsMap, frontMatter, baseUrl});
+
+  // authors.forEach((a) => logger.info(a));
+
+  const namedAuthors = options.generateAuthorsPages
+    ? normalizeFrontMatterNamedAuthors(
+        authorsBasePath,
+        filterNamedAuthors(authors),
+      )
+    : [];
+
+  // namedAuthors.forEach((a) => logger.info(a));
 
   const parsedEventDates: ParsedEventDates = options.sortPostsByEventDate
     ? parseFrontMatterEventDates({frontMatter, context, options})
@@ -403,7 +490,7 @@ async function processBlogSourceFile(
       formattedDateForArchive: parsedEventDates.eventDate
         ? (parsedEventDates.eventDateFormattedForArchive as string)
         : formattedDateForArchive,
-      tags: normalizeFrontMatterTags(tagsBasePath, frontMatter.tags),
+      tags,
       readingTime: showReadingTime
         ? options.readingTime({
             content,
@@ -413,6 +500,7 @@ async function processBlogSourceFile(
         : undefined,
       hasTruncateMarker: truncateMarker.test(content),
       authors,
+      namedAuthors,
       frontMatter,
       unlisted,
       lastUpdatedBy: lastUpdate.lastUpdatedBy,

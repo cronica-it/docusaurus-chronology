@@ -1519,6 +1519,33 @@ declare module '@theme/Tag' {
   export default function Tag(props: Props): JSX.Element;
 }
 
+declare module '@theme/AuthorsListByLetter' {
+  import type {NamedAuthorsListItem} from '@docusaurus/utils';
+
+  export interface Props {
+    readonly authors: readonly NamedAuthorsListItem[];
+  }
+  export default function AuthorsListByLetter(props: Props): JSX.Element;
+}
+
+declare module '@theme/AuthorsListInline' {
+  import type {NamedAuthor} from '@docusaurus/utils';
+
+  export interface Props {
+    readonly authors: readonly NamedAuthor[];
+  }
+  export default function AuthorsListInline(props: Props): JSX.Element;
+}
+
+declare module '@theme/Author' {
+  import type {NamedAuthorsListItem} from '@docusaurus/utils';
+  import type {Optional} from 'utility-types';
+
+  export interface Props extends Optional<NamedAuthorsListItem, 'count'> {}
+
+  export default function Author(props: Props): JSX.Element;
+}
+
 declare module '@theme/Unlisted' {
   export interface Props {
     className?: string;

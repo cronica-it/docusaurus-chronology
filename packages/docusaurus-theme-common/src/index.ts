@@ -77,6 +77,12 @@ export {
 } from './utils/tagsUtils';
 
 export {
+  translateAuthorsPageTitle,
+  listAuthorsByLetters,
+  type AuthorLetterEntry,
+} from './utils/authorsUtils';
+
+export {
   useSearchQueryString,
   useSearchLinkCreator,
 } from './hooks/useSearchPage';

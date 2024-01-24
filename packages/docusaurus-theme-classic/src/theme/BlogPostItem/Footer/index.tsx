@@ -13,11 +13,12 @@ import TagsListInline from '@theme/TagsListInline';
 import ReadMoreLink from '@theme/BlogPostItem/Footer/ReadMoreLink';
 import LastUpdated from '@theme/LastUpdated';
 
+import AuthorsListInline from '@theme/AuthorsListInline';
 import styles from './styles.module.css';
 
 export default function BlogPostItemFooter(): JSX.Element | null {
   const {metadata, isBlogPostPage} = useBlogPost();
-  const {tags, title, editUrl, hasTruncateMarker} = metadata;
+  const {namedAuthors, tags, title, editUrl, hasTruncateMarker} = metadata;
 
   // A post is truncated if it's in the "list view" and it has a truncate marker
   const truncatedPost = !isBlogPostPage && hasTruncateMarker;
@@ -41,6 +42,12 @@ export default function BlogPostItemFooter(): JSX.Element | null {
       {tagsExists && (
         <div className={clsx('col', {'col--9': truncatedPost})}>
           <TagsListInline tags={tags} />
+        </div>
+      )}
+
+      {!truncatedPost && tagsExists && (
+        <div className={clsx('col', {'col--9': truncatedPost})}>
+          <AuthorsListInline authors={namedAuthors} />
         </div>
       )}
 

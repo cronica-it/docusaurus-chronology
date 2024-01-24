@@ -23,6 +23,7 @@ import {
   generateBlogPosts,
   getSourceToPermalink,
   getBlogTags,
+  getBlogNamedAuthors,
   paginateBlogPosts,
   shouldBeListed,
 } from './blogUtils';
@@ -30,7 +31,12 @@ import footnoteIDFixer from './remark/footnoteIDFixer';
 import {translateContent, getTranslationFiles} from './translations';
 import {createBlogFeedFiles} from './feed';
 
-import {toTagProp, toTagsProp} from './props';
+import {
+  toNamedAuthorsProp,
+  toNamedAuthorProp,
+  toTagProp,
+  toTagsProp,
+} from './props';
 import {blogDateNewestComparator} from './blogDateComparators';
 import type {BlogContentPaths, BlogMarkdownLoaderOptions} from './types';
 import type {LoadContext, Plugin, HtmlTags} from '@docusaurus/types';
@@ -41,6 +47,8 @@ import type {
   Assets,
   BlogTag,
   BlogTags,
+  BlogNamedAuthor,
+  BlogNamedAuthors,
   BlogContent,
   BlogPaginated,
 } from '@docusaurus/plugin-content-blog';
@@ -105,6 +113,7 @@ export default async function pluginContentBlog(
         postsPerPage: postsPerPageOption,
         routeBasePath,
         tagsBasePath,
+        authorsBasePath,
         blogDescription,
         blogTitle,
         blogSidebarTitle,
@@ -113,6 +122,9 @@ export default async function pluginContentBlog(
 
       const baseBlogUrl = normalizeUrl([baseUrl, routeBasePath]);
       const blogTagsListPath = normalizeUrl([baseBlogUrl, tagsBasePath]);
+      // logger.info(`authorsBasePath ${authorsBasePath}`);
+      const blogAuthorsListPath = normalizeUrl([baseBlogUrl, authorsBasePath]);
+      // logger.info(`blogAuthorsListPath ${blogAuthorsListPath}`);
       const blogPosts = await generateBlogPosts(contentPaths, context, options);
       const listedBlogPosts = blogPosts.filter(shouldBeListed);
 
@@ -125,6 +137,9 @@ export default async function pluginContentBlog(
           blogTags: {},
           blogTagsListPath,
           blogTagsPaginated: [],
+          blogNamedAuthors: {},
+          blogAuthorsListPath,
+          blogAuthorsPaginated: [],
         };
       }
 
@@ -171,6 +186,25 @@ export default async function pluginContentBlog(
         pageBasePath,
       });
 
+      const blogNamedAuthors: BlogNamedAuthors = options.generateAuthorsPages
+        ? getBlogNamedAuthors({
+            blogPosts,
+            postsPerPageOption,
+            blogDescription,
+            blogTitle,
+            pageBasePath,
+          })
+        : {};
+
+      // if (options.generateAuthorsPages) {
+      //   logger.info(
+      //     `blogNamedAuthors ${options.id} ${options.routeBasePath} ${options.path} '${options.blogDescription}'`,
+      //   );
+      //   Object.keys(blogNamedAuthors).forEach((key) => {
+      //     logger.info(blogNamedAuthors[key]);
+      //   });
+      // }
+
       return {
         blogSidebarTitle,
         blogPosts,
@@ -178,6 +212,8 @@ export default async function pluginContentBlog(
         blogListPaginated,
         blogTags,
         blogTagsListPath,
+        blogNamedAuthors,
+        blogAuthorsListPath,
       };
     },
 
@@ -187,6 +223,8 @@ export default async function pluginContentBlog(
         blogPostComponent,
         blogTagsListComponent,
         blogTagsPostsComponent,
+        blogAuthorsListComponent,
+        blogAuthorsPostsComponent,
         blogArchiveComponent,
         routeBasePath,
         archiveBasePath,
@@ -199,6 +237,8 @@ export default async function pluginContentBlog(
         blogListPaginated,
         blogTags,
         blogTagsListPath,
+        blogNamedAuthors,
+        blogAuthorsListPath,
       } = blogContents;
 
       const listedBlogPosts = blogPosts.filter(shouldBeListed);
@@ -313,11 +353,9 @@ export default async function pluginContentBlog(
         }),
       );
 
-      // Tags. This is the last part so we early-return if there are no tags.
-      if (Object.keys(blogTags).length === 0) {
-        return;
-      }
+      // ----------------------------------------------------------------------
 
+      // Tags.
       async function createTagsListPage() {
         const tagsPropPath = await createData(
           `${docuHash(`${blogTagsListPath}-tags`)}.json`,
@@ -343,6 +381,9 @@ export default async function pluginContentBlog(
               JSON.stringify(toTagProp({tag, blogTagsListPath}), null, 2),
             );
 
+            // logger.info('createTagPostsListPage metadata');
+            // logger.info(metadata);
+
             const listMetadataPath = await createData(
               `${docuHash(metadata.permalink)}-list.json`,
               JSON.stringify(metadata, null, 2),
@@ -363,8 +404,82 @@ export default async function pluginContentBlog(
         );
       }
 
-      await createTagsListPage();
-      await Promise.all(Object.values(blogTags).map(createTagPostsListPage));
+      if (Object.keys(blogTags).length > 0) {
+        await createTagsListPage();
+        await Promise.all(Object.values(blogTags).map(createTagPostsListPage));
+      }
+
+      // ----------------------------------------------------------------------
+
+      // Authors.
+
+      async function createNamedAuthorsListPage() {
+        const authorsPropPath = await createData(
+          `${docuHash(`${blogAuthorsListPath}-authors`)}.json`,
+          JSON.stringify(toNamedAuthorsProp({blogNamedAuthors}), null, 2),
+        );
+        addRoute({
+          path: blogAuthorsListPath,
+          component: blogAuthorsListComponent,
+          exact: true,
+          modules: {
+            sidebar: aliasedSource(sidebarProp),
+            authors: aliasedSource(authorsPropPath),
+          },
+        });
+      }
+
+      async function createNamedAuthorPostsListPage(
+        author: BlogNamedAuthor,
+      ): Promise<void> {
+        // assert(author.name)
+        // assert(author.permalink)
+        await Promise.all(
+          author.pages.map(async (blogPage: BlogPaginated) => {
+            const {metadata, items} = blogPage;
+            // logger.info('createAuthorPostsListPage author');
+            // logger.info(toNamedAuthorProp({author, blogAuthorsListPath}));
+            const authorPropPath = await createData(
+              `${docuHash(metadata.permalink)}.json`,
+              JSON.stringify(
+                toNamedAuthorProp({author, blogAuthorsListPath}),
+                null,
+                2,
+              ),
+            );
+
+            // logger.info('createAuthorPostsListPage metadata');
+            // logger.info(metadata);
+
+            const listMetadataPath = await createData(
+              `${docuHash(metadata.permalink)}-list.json`,
+              JSON.stringify(metadata, null, 2),
+            );
+
+            addRoute({
+              path: metadata.permalink,
+              component: blogAuthorsPostsComponent,
+              exact: true,
+              modules: {
+                sidebar: aliasedSource(sidebarProp),
+                items: blogPostItemsModule(items),
+                author: aliasedSource(authorPropPath),
+                listMetadata: aliasedSource(listMetadataPath),
+              },
+            });
+          }),
+        );
+      }
+
+      if (
+        options.generateAuthorsPages &&
+        Object.keys(blogNamedAuthors).length > 0
+      ) {
+        await createNamedAuthorsListPage();
+        await Promise.all(
+          Object.values(blogNamedAuthors).map(createNamedAuthorPostsListPage),
+        );
+      }
     },
 
     translateContent({content, translationFiles}) {

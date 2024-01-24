@@ -265,6 +265,10 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
      * `assets.authorsImageUrls` on client side.
      */
     readonly authors: Author[];
+    /**
+     * Named authors, for use in the Authors grouping page.
+     */
+    readonly namedAuthors: NamedAuthor[];
     /** Front matter, as-is. */
     readonly frontMatter: BlogPostFrontMatter & {[key: string]: unknown};
     /** Tags, normalized. */
@@ -415,6 +419,11 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
      */
     tagsBasePath: string;
     /**
+     * URL route for the authors section of your blog. Will be appended to
+     * `routeBasePath`. **DO NOT** include a trailing slash.
+     */
+    authorsBasePath: string;
+    /**
      * URL route for the pages section of your blog. Will be appended to
      * `routeBasePath`. **DO NOT** include a trailing slash.
      */
@@ -448,6 +457,10 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
     blogTagsListComponent: string;
     /** Root component of the "posts containing tag" page. */
     blogTagsPostsComponent: string;
+    /** Root component of the authors list page. */
+    blogAuthorsListComponent: string;
+    /** Root component of the "posts containing author" page. */
+    blogAuthorsPostsComponent: string;
     /** Root component of the blog archive page. */
     blogArchiveComponent: string;
     /** Blog page title for better SEO. */
@@ -493,6 +506,8 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
     sortPostsByEventDate?: boolean;
     /** Whether to do not show redundant year in Archive grouping. */
     hidePostYearInArchive?: boolean;
+    /** Whether to generate the Authors grouping pages. */
+    generateAuthorsPages?: boolean;
   };
 
   /**
@@ -534,6 +549,8 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
     blogListPaginated: BlogPaginated[];
     blogTags: BlogTags;
     blogTagsListPath: string;
+    blogNamedAuthors: BlogNamedAuthors;
+    blogAuthorsListPath: string;
   };
 
   export type BlogTags = {
@@ -541,6 +558,17 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
   };
 
   export type BlogTag = Tag & {
+    /** Blog post permalinks. */
+    items: string[];
+    pages: BlogPaginated[];
+    unlisted: boolean;
+  };
+
+  export type BlogNamedAuthors = {
+    [permalink: string]: BlogNamedAuthor;
+  };
+
+  export type BlogNamedAuthor = NamedAuthor & {
     /** Blog post permalinks. */
     items: string[];
     pages: BlogPaginated[];
@@ -691,6 +719,45 @@ declare module '@theme/BlogTagsPostsPage' {
   }
 
   export default function BlogTagsPostsPage(props: Props): JSX.Element;
+}
+
+declare module '@theme/BlogAuthorsListPage' {
+  import type {BlogSidebar} from '@docusaurus/plugin-content-blog';
+  import type {NamedAuthorsListItem} from '@docusaurus/utils';
+
+  export interface Props {
+    /** Blog sidebar. */
+    readonly sidebar: BlogSidebar;
+    /** All authors declared in this blog. */
+    readonly authors: NamedAuthorsListItem[];
+  }
+
+  export default function BlogAuthorsListPage(props: Props): JSX.Element;
+}
+
+declare module '@theme/BlogAuthorsPostsPage' {
+  import type {Content} from '@theme/BlogPostPage';
+  import type {
+    BlogSidebar,
+    BlogPaginatedMetadata,
+  } from '@docusaurus/plugin-content-blog';
+  import type {NamedAuthorModule} from '@docusaurus/utils';
+
+  export interface Props {
+    /** Blog sidebar. */
+    readonly sidebar: BlogSidebar;
+    /** Metadata of this author. */
+    readonly author: NamedAuthorModule;
+    /** Looks exactly the same as the posts list page */
+    readonly listMetadata: BlogPaginatedMetadata;
+    /**
+     * Array of blog posts included on this page. Every post's metadata is also
+     * available.
+     */
+    readonly items: readonly {readonly content: Content}[];
+  }
+
+  export default function BlogAuthorsPostsPage(props: Props): JSX.Element;
 }
 
 declare module '@theme/BlogArchivePage' {
