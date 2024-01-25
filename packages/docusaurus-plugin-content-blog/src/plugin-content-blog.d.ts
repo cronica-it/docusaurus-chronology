@@ -295,9 +295,9 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
      */
     readonly eventDateFormattedForArchive?: string;
     /**
-     * The event interval formatted according to locales.
+     * The event date range formatted according to locales.
      */
-    readonly eventRangeFormatted?: string;
+    readonly eventDateRangeFormatted?: string;
 
     /** Thee event/post year, for archive grouping. */
     readonly yearForArchive: string;
@@ -630,7 +630,7 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
   >;
 
   export type ChronologyRecord = {
-    interval: string;
+    eventDateRange: string;
     title: string;
     permalink: string;
     isInternational: boolean;

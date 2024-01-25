@@ -517,7 +517,7 @@ async function processBlogSourceFile(
       eventDateFormatted: parsedEventDates.eventDateFormatted,
       eventDateFormattedForArchive:
         parsedEventDates.eventDateFormattedForArchive,
-      eventRangeFormatted: parsedEventDates.eventRangeFormatted,
+      eventDateRangeFormatted: parsedEventDates.eventDateRangeFormatted,
     },
     content,
   };

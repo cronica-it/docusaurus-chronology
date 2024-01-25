@@ -132,7 +132,7 @@ const formatEventDate = ({
 // The code is a bit tricky; it cannot simply use formatRange()
 // because the date may not be present and it must not be shown
 // as 15.
-const formatEventRange = ({
+const formatEventDateRange = ({
   frontMatterEventDate,
   eventDate,
   frontMatterEventEndDate,
@@ -228,8 +228,8 @@ export type ParsedEventDates = {
   eventEndDate?: Date;
   eventDateFormatted?: string;
   eventDateFormattedForArchive?: string;
-  eventRangeFormatted?: string;
-  eventRangeFormattedForArchive?: string;
+  eventDateRangeFormatted?: string;
+  eventDateRangeFormattedForArchive?: string;
 };
 
 export const parseFrontMatterEventDates = ({
@@ -265,7 +265,7 @@ export const parseFrontMatterEventDates = ({
       result.eventEndDate = parseEventDate({
         frontMatterEventDate: frontMatter.event_end_date,
       });
-      result.eventRangeFormatted = formatEventRange({
+      result.eventDateRangeFormatted = formatEventDateRange({
         frontMatterEventDate: frontMatter.event_date,
         eventDate: result.eventDate,
         frontMatterEventEndDate: frontMatter.event_end_date,
@@ -274,7 +274,7 @@ export const parseFrontMatterEventDates = ({
       });
     } else {
       // Actually not a range, only the begin date.
-      result.eventRangeFormatted = result.eventDateFormatted;
+      result.eventDateRangeFormatted = result.eventDateFormatted;
     }
   }
   // logger.info(result);

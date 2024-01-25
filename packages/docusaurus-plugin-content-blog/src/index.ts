@@ -357,9 +357,9 @@ export default async function pluginContentBlog(
 
       const chronologyRecords: ChronologyRecord[] = [];
       blogPosts.forEach((post) => {
-        if (post.metadata.eventRangeFormatted) {
+        if (post.metadata.eventDateRangeFormatted) {
           chronologyRecords.push({
-            interval: post.metadata.eventRangeFormatted,
+            eventDateRange: post.metadata.eventDateRangeFormatted,
             title: post.metadata.title,
             permalink: post.metadata.permalink,
             isInternational:
