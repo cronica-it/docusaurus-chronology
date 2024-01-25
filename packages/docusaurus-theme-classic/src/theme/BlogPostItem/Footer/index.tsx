@@ -24,6 +24,7 @@ export default function BlogPostItemFooter(): JSX.Element | null {
   const truncatedPost = !isBlogPostPage && hasTruncateMarker;
 
   const tagsExists = tags.length > 0;
+  const authorsExists = namedAuthors.length > 0;
 
   const renderFooter = tagsExists || truncatedPost || editUrl;
 
@@ -45,7 +46,7 @@ export default function BlogPostItemFooter(): JSX.Element | null {
         </div>
       )}
 
-      {!truncatedPost && tagsExists && (
+      {!truncatedPost && authorsExists && (
         <div className={clsx('col', {'col--9': truncatedPost})}>
           <AuthorsListInline authors={namedAuthors} />
         </div>
