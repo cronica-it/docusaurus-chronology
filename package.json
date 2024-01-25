@@ -12,6 +12,7 @@
     "admin/new.docusaurus.io"
   ],
   "scripts": {
+    "my-deep-clean": "rm -rf website/node_modules packages/*/node_modules argos/node_modules packages/*/lib packages/*.tgz",
     "my-yarn-install": "yarn install",
     "my-build-packages": "yarn run build:packages",
     "my-watch": "yarn run watch",
@@ -21,8 +22,8 @@
     "my-format": "yarn run format",
     "my-npm-link": "(cd packages/docusaurus-plugin-content-blog; npm link) && (cd packages/docusaurus-theme-classic; npm link) && (cd packages/docusaurus-theme-common; npm link) && (cd packages/docusaurus-utils; npm link)",
     "my-npm-pack": "mkdir releases && (cd packages/docusaurus-plugin-content-blog; npm pack) && (cd packages/docusaurus-theme-classic; npm pack) && (cd packages/docusaurus-theme-common; npm pack) && (cd packages/docusaurus-utils; npm pack) && cp packages/*/*.tgz releases",
-    "my-deep-clean": "rm -rf website/node_modules packages/*/node_modules argos/node_modules packages/*/lib packages/*.tgz",
-    "my-bump-version": "yarn lerna version 3.1.0-1 --exact --no-push --yes",
+    "my-version": "cat VERSION | sed -e '2,$d'",
+    "my-bump-version": "yarn lerna version `yarn --silent my-version` --exact --no-push --yes",
     "start": "yarn build:packages && yarn start:website",
     "start:website": "yarn workspace website start",
     "start:website:baseUrl": "yarn workspace website start:baseUrl",
