@@ -35,21 +35,28 @@ const parseEventDate = ({
     Number.isInteger(dateParts[2])
   ) {
     date = new Date(
-      dateParts[0] as number,
-      dateParts[1] as number,
-      dateParts[2],
+      Date.UTC(
+        dateParts[0] as number,
+        dateParts[1] as number,
+        dateParts[2],
+        12, // noon
+        0,
+        0,
+      ),
     );
   } else if (
     dateParts.length === 2 &&
     Number.isInteger(dateParts[0]) &&
     Number.isInteger(dateParts[1])
   ) {
-    date = new Date(dateParts[0] as number, dateParts[1] as number, 15);
+    date = new Date(
+      Date.UTC(dateParts[0] as number, dateParts[1] as number, 15, 12, 0, 0),
+    );
     date.setFullYear(year);
   } else if (dateParts.length === 1 && Number.isInteger(dateParts[0])) {
-    date = new Date(dateParts[0] as number, 7, 1);
+    date = new Date(Date.UTC(dateParts[0] as number, 7, 1, 12, 0, 0));
   } else {
-    // Last resort, try to parse as standard date.
+    // Last resort, try to parse as standard date. (local time!)
     date = new Date(frontMatterEventDate);
   }
 
