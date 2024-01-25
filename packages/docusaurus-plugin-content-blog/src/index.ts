@@ -31,6 +31,7 @@ import {translateContent, getTranslationFiles} from './translations';
 import {createBlogFeedFiles} from './feed';
 
 import {toTagProp, toTagsProp} from './props';
+import {blogDateNewestComparator} from './blogDateComparators';
 import type {BlogContentPaths, BlogMarkdownLoaderOptions} from './types';
 import type {LoadContext, Plugin, HtmlTags} from '@docusaurus/types';
 import type {
@@ -118,12 +119,17 @@ export default async function pluginContentBlog(
         return {
           blogSidebarTitle,
           blogPosts: [],
+          blogPostsNewest: [],
           blogListPaginated: [],
           blogTags: {},
           blogTagsListPath,
           blogTagsPaginated: [],
         };
       }
+
+      // Create a new array with the entries sorted by creation/modification
+      // date, to be used in feeds and in a separate web page.
+      const blogPostsNewest = [...blogPosts].sort(blogDateNewestComparator);
 
       // Colocate next and prev metadata.
       listedBlogPosts.forEach((blogPost, index) => {
@@ -165,6 +171,7 @@ export default async function pluginContentBlog(
       return {
         blogSidebarTitle,
         blogPosts,
+        blogPostsNewest,
         blogListPaginated,
         blogTags,
         blogTagsListPath,
@@ -465,12 +472,12 @@ export default async function pluginContentBlog(
       if (!options.feedOptions.type) {
         return;
       }
-      const {blogPosts} = content;
-      if (!blogPosts.length) {
+      const {blogPostsNewest} = content;
+      if (!blogPostsNewest.length) {
         return;
       }
       await createBlogFeedFiles({
-        blogPosts,
+        blogPostsNewest,
         options,
         outDir,
         siteConfig,

@@ -7,10 +7,11 @@
 
 import React from 'react';
 import clsx from 'clsx';
-import {useBlogPost} from '@docusaurus/theme-common/internal';
+import {ThemeClassNames, useBlogPost} from '@docusaurus/theme-common/internal';
 import EditThisPage from '@theme/EditThisPage';
 import TagsListInline from '@theme/TagsListInline';
 import ReadMoreLink from '@theme/BlogPostItem/Footer/ReadMoreLink';
+import LastUpdated from '@theme/LastUpdated';
 
 import styles from './styles.module.css';
 
@@ -29,6 +30,8 @@ export default function BlogPostItemFooter(): JSX.Element | null {
     return null;
   }
 
+  const {lastUpdatedAt, lastUpdatedBy, formattedLastUpdatedAt} = metadata;
+
   return (
     <footer
       className={clsx(
@@ -41,11 +44,23 @@ export default function BlogPostItemFooter(): JSX.Element | null {
         </div>
       )}
 
-      {isBlogPostPage && editUrl && (
-        <div className="col margin-top--sm">
-          <EditThisPage editUrl={editUrl} />
+      <div className={clsx(ThemeClassNames.docs.docFooterEditMetaRow, 'row')}>
+        {isBlogPostPage && editUrl && (
+          <div className="col margin-top--sm">
+            <EditThisPage editUrl={editUrl} />
+          </div>
+        )}
+
+        <div className={clsx('col', styles.lastUpdated)}>
+          {(lastUpdatedAt || lastUpdatedBy) && !truncatedPost && (
+            <LastUpdated
+              lastUpdatedAt={lastUpdatedAt}
+              formattedLastUpdatedAt={formattedLastUpdatedAt}
+              lastUpdatedBy={lastUpdatedBy}
+            />
+          )}
         </div>
-      )}
+      </div>
 
       {truncatedPost && (
         <div

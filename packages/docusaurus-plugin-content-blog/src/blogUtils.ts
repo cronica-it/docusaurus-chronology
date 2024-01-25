@@ -15,6 +15,7 @@ import {
   normalizeUrl,
   aliasedSitePath,
   getEditUrl,
+  getFileLastUpdate,
   getFolderContainingFile,
   posixPath,
   replaceMarkdownLinks,
@@ -36,8 +37,15 @@ import type {
   BlogPost,
   BlogTags,
   BlogPaginated,
+  LastUpdateData,
+  FileChange,
 } from '@docusaurus/plugin-content-blog';
 import type {BlogContentPaths, BlogMarkdownLoaderOptions} from './types';
+
+type LastUpdateOptions = Pick<
+  PluginOptions,
+  'showLastUpdateAuthor' | 'showLastUpdateTime'
+>;
 
 export function truncate(fileString: string, truncateMarker: RegExp): string {
   return fileString.split(truncateMarker, 1).shift()!;
@@ -245,6 +253,20 @@ async function processBlogSourceFile(
       parseFrontMatter,
     });
 
+  const {last_update: lastUpdateFrontMatter} = frontMatter;
+
+  const lastUpdate = await readLastUpdateData(
+    blogSourceAbsolute,
+    options,
+    lastUpdateFrontMatter,
+  );
+
+  // For debug purposes only, disable for production.
+  if (lastUpdate.lastUpdatedAt) {
+    const dateOut = new Date(lastUpdate.lastUpdatedAt * 1000).toISOString();
+    logger.info(`${dateOut} ${blogSourceAbsolute}`);
+  }
+
   const aliasedSource = aliasedSitePath(blogSourceAbsolute, siteDir);
 
   const draft = isDraft({frontMatter});
@@ -285,10 +307,10 @@ async function processBlogSourceFile(
     }
   }
 
-  const date = await getDate();
+  const postDate = await getDate();
   const formattedDate = formatBlogPostDate(
     i18n.currentLocale,
-    date,
+    postDate,
     i18n.localeConfigs[i18n.currentLocale]!.calendar,
   );
 
@@ -336,6 +358,21 @@ async function processBlogSourceFile(
   ]);
   const authors = getBlogPostAuthors({authorsMap, frontMatter, baseUrl});
 
+  const formatDate = (locale: string, date: Date, calendar: string): string => {
+    try {
+      return new Intl.DateTimeFormat(locale, {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        timeZone: 'UTC',
+        calendar,
+      }).format(date);
+    } catch (err) {
+      logger.error`Can't format docs lastUpdatedAt date "${String(date)}"`;
+      throw err;
+    }
+  };
+
   return {
     id: slug,
     metadata: {
@@ -344,7 +381,7 @@ async function processBlogSourceFile(
       source: aliasedSource,
       title,
       description,
-      date,
+      date: postDate,
       formattedDate,
       tags: normalizeFrontMatterTags(tagsBasePath, frontMatter.tags),
       readingTime: showReadingTime
@@ -358,9 +395,59 @@ async function processBlogSourceFile(
       authors,
       frontMatter,
       unlisted,
+      lastUpdatedBy: lastUpdate.lastUpdatedBy,
+      lastUpdatedAt: lastUpdate.lastUpdatedAt,
+      formattedLastUpdatedAt: lastUpdate.lastUpdatedAt
+        ? formatDate(
+            i18n.currentLocale,
+            new Date(lastUpdate.lastUpdatedAt * 1000),
+            i18n.localeConfigs[i18n.currentLocale]!.calendar,
+          )
+        : undefined,
     },
     content,
   };
+}
+
+async function readLastUpdateData(
+  filePath: string,
+  options: LastUpdateOptions,
+  lastUpdateFrontMatter: FileChange | undefined,
+): Promise<LastUpdateData> {
+  const {showLastUpdateAuthor, showLastUpdateTime} = options;
+  if (showLastUpdateAuthor || showLastUpdateTime) {
+    const frontMatterTimestamp = lastUpdateFrontMatter?.date
+      ? new Date(lastUpdateFrontMatter.date).getTime() / 1000
+      : undefined;
+
+    if (lastUpdateFrontMatter?.author && lastUpdateFrontMatter.date) {
+      return {
+        lastUpdatedAt: frontMatterTimestamp,
+        lastUpdatedBy: lastUpdateFrontMatter.author,
+      };
+    }
+
+    // Use fake data in dev for faster development.
+    const fileLastUpdateData =
+      process.env.NODE_ENV === 'production'
+        ? await getFileLastUpdate(filePath)
+        : {
+            author: 'Author',
+            timestamp: 1539502055,
+          };
+    const {author, timestamp} = fileLastUpdateData ?? {};
+
+    return {
+      lastUpdatedBy: showLastUpdateAuthor
+        ? lastUpdateFrontMatter?.author ?? author
+        : undefined,
+      lastUpdatedAt: showLastUpdateTime
+        ? frontMatterTimestamp ?? timestamp
+        : undefined,
+    };
+  }
+
+  return {};
 }
 
 export async function generateBlogPosts(

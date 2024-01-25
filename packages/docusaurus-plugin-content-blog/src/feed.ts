@@ -202,19 +202,19 @@ function shouldBeInFeed(blogPost: BlogPost): boolean {
 }
 
 export async function createBlogFeedFiles({
-  blogPosts: allBlogPosts,
+  blogPostsNewest,
   options,
   siteConfig,
   outDir,
   locale,
 }: {
-  blogPosts: BlogPost[];
+  blogPostsNewest: BlogPost[];
   options: PluginOptions;
   siteConfig: DocusaurusConfig;
   outDir: string;
   locale: string;
 }): Promise<void> {
-  const blogPosts = allBlogPosts.filter(shouldBeInFeed);
+  const blogPosts = blogPostsNewest.filter(shouldBeInFeed);
 
   const feed = await generateBlogFeed({
     blogPosts,
