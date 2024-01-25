@@ -44,4 +44,5 @@ website/i18n/**/*
 
 .netlify
 
-docusaurus-*.tgz
+packages/*/*.tgz
+releases
