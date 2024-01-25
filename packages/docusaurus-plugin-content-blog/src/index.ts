@@ -51,6 +51,7 @@ import type {
   BlogNamedAuthors,
   BlogContent,
   BlogPaginated,
+  ChronologyRecord,
 } from '@docusaurus/plugin-content-blog';
 
 export default async function pluginContentBlog(
@@ -198,7 +199,8 @@ export default async function pluginContentBlog(
 
       // if (options.generateAuthorsPages) {
       //   logger.info(
-      //     `blogNamedAuthors ${options.id} ${options.routeBasePath} ${options.path} '${options.blogDescription}'`,
+      //     `blogNamedAuthors ${options.id} ${options.routeBasePath} `+
+      //     `${options.path} '${options.blogDescription}'`,
       //   );
       //   Object.keys(blogNamedAuthors).forEach((key) => {
       //     logger.info(blogNamedAuthors[key]);
@@ -230,7 +232,7 @@ export default async function pluginContentBlog(
         archiveBasePath,
       } = options;
 
-      const {addRoute, createData} = actions;
+      const {addRoute, createData, setGlobalData} = actions;
       const {
         blogSidebarTitle,
         blogPosts,
@@ -352,6 +354,26 @@ export default async function pluginContentBlog(
           });
         }),
       );
+
+      const chronologyRecords: ChronologyRecord[] = [];
+      blogPosts.forEach((post) => {
+        if (post.metadata.eventRangeFormatted) {
+          chronologyRecords.push({
+            interval: post.metadata.eventRangeFormatted,
+            title: post.metadata.title,
+            permalink: post.metadata.permalink,
+            isInternational:
+              post.metadata.frontMatter?.tags?.includes('international') ||
+              false,
+          });
+        }
+      });
+
+      chronologyRecords.forEach((record) => logger.info(record));
+
+      setGlobalData({
+        chronologyRecords,
+      });
 
       // ----------------------------------------------------------------------
 

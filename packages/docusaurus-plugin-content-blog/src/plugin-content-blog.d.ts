@@ -629,6 +629,13 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
     Assets
   >;
 
+  export type ChronologyRecord = {
+    interval: string;
+    title: string;
+    permalink: string;
+    isInternational: boolean;
+  };
+
   export default function pluginContentBlog(
     context: LoadContext,
     options: PluginOptions,
