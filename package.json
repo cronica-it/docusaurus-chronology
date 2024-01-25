@@ -12,10 +12,11 @@
     "admin/new.docusaurus.io"
   ],
   "scripts": {
+    "my-release": "yarn run my-deep-clean && yarn install && yarn run lint && yarn run my-npm-pack",
     "my-deep-clean": "rm -rf website/node_modules packages/*/node_modules argos/node_modules packages/*/lib packages/*.tgz",
     "my-yarn-install": "yarn install",
-    "my-npm-pack": "yarn run build:packages && rm -rf releases && mkdir -p releases && for d in packages/*; do (cd $d; npm pack); done && cp packages/*/*.tgz releases",
     "my-build-packages": "yarn run build:packages",
+    "my-npm-pack": "rm -rf releases && mkdir -p releases && for d in packages/*; do (cd $d; npm pack); done && cp packages/*/*.tgz releases",
     "my-watch": "yarn run watch",
     "my-build-website-en": "yarn workspace website build --locale en",
     "my-start-website": "yarn run start:website",
