@@ -1,3 +1,65 @@
+# Docusaurus fork
+
+This is a fork of the [facebook/docusaurus.git](https://github.com/facebook/docusaurus) project.
+
+The updated code is in the `development` branch.
+
+The changes are mainly enhancements, are enabled via configuration options, and the defaults should not affect the functionality of standard the Docusaurus project.
+
+The enhancements are listed below.
+
+## Generate grouping pages by Author
+
+Similarly to the Tags grouping pages, pages to group posts by Authors were added.
+
+A new configuration option `generateAuthorsPages` was added; when set to true, the authors pages are generated as `blog/authors` and `blog/authors/name`.
+
+Docusaurus allows to use authors without a name; they are filtered out and not indexed in these pages.
+
+## Add `showLastUpdateTime` and `showLastUpdateAuthor` to blog posts
+
+The same mechanism used for docs was also added to blog posts, to show the date when the post was last time edited and by whom.
+
+When enabled, the last update time is displayed below the post and also used when sorting the posts in the feed files.
+
+## Add `pageBasePath` to blog plugin configuration
+
+For multi-page lists, the URL was hard-coded as `page`.
+
+For internationalised sites, this word can be changed to local language, similarly to `tagsBasePath`.
+
+## Hide redundant year in dates shown in the Archive page
+
+In the Archive page, the post titles grouped by years, do not need to show the year again, since it is redundant.
+
+A new configuration option `hidePostYearInArchive` was added; when set to true, the date format is adjusted to no longer show the year.
+
+## Add support for posts about events in the past
+
+The common use case for blogs is to document events that happened at the date when the post was created.
+
+For blogs documenting historical events the post date must remain in the present, and the event date must be added as a separate frontMatter string property, which can be incomplete, for example:
+
+```
+event_date: '1994'
+event_date: '1994-11'
+event_date: '1994-11-07'
+```
+
+For events that lasted more than one day, it is possible to define the end date, as a string with the similar incomplete syntax:
+
+```
+event_end_date: '1995'
+event_end_date: '1994-12'
+event_end_date: '1994-11-08'
+```
+
+A new configuration option `sortPostsByEventDate` was added; when set to true, the event dates are parsed, and, if present, these dates are used when sorting the posts in the Archive page, so the past events are located when they happened, not when they were entered in the blog.
+
+---
+
+The original README content follows:
+
 <div align="center">
   <h1 align="center">
     Docusaurus
