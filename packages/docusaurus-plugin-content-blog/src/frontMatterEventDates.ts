@@ -203,7 +203,7 @@ const formatEventRange = ({
         year: 'numeric',
         timeZone: 'UTC',
         calendar,
-      }).format(eventDate);
+      }).format(eventEndDate);
 
       range = `${from} - ${to}`;
     }
