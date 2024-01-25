@@ -461,7 +461,6 @@ export default async function createConfigAsync() {
             // mine!
             showLastUpdateAuthor: true,
             showLastUpdateTime: true,
-            pageBasePath: 'pages',
             hidePostYearInArchive: true,
             sortPostsByEventDate: true,
             generateAuthorsPages: true,
