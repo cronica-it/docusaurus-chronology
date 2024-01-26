@@ -40,7 +40,7 @@ In the Archive page, when listing the the post titles grouped by years, there is
 
 For aesthetic reasons, a new configuration option `hidePostYearInArchive` was added; when set to true, the date format is adjusted to no longer show the year.
 
-## Improve support for posts about events in the past
+## Improve support for posts related to events in the past
 
 The common use case for blogs is to document recent events, for which the post date and the event date are the same.
 
