@@ -2,19 +2,29 @@
 
 ## How to make new releases
 
+### Update the VERSION file
+
+The format is `3.1.1-1`.
+
+### Bump version
+
+```sh
+yarn run my-bump-version
+```
+
 ### Update repo
 
 In the `development` branch, commit and push.
 
-### Run the build
+### Run a test build
 
 ```sh
 yarn run my-release
 ```
 
-### Add tag
+### Check tag
 
-Add a new tag, like `v3.1.0-1`.
+The must be a new tag, like `v3.1.1-1`.
 
 ### Create release
 
