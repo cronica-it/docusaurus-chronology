@@ -45,4 +45,4 @@ website/i18n/**/*
 .netlify
 
 packages/*/*.tgz
-releases
+release
