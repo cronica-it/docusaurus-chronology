@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "my-release": "yarn run my-deep-clean && yarn install && yarn run lint && yarn run my-npm-pack",
-    "my-deep-clean": "rm -rf website/node_modules packages/*/node_modules argos/node_modules packages/*/lib packages/*.tgz",
+    "my-deep-clean": "rm -rf website/node_modules packages/*/node_modules argos/node_modules packages/*/lib packages/*.tgz release",
     "my-yarn-install": "yarn install",
     "my-build-packages": "yarn run build:packages",
     "my-npm-pack": "rm -rf release && mkdir -p release && for d in packages/*; do (cd $d; npm pack); done && cp packages/*/*.tgz release",
