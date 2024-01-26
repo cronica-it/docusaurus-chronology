@@ -12,19 +12,17 @@ The format is `3.1.1-1`.
 yarn run my-bump-version
 ```
 
-### Update repo
+### Update the repo
 
-In the `development` branch, commit and push.
+In the `development` branch, check the tagged commit and push.
+
+Push the new tag to `origin`.
 
 ### Run a test build
 
 ```sh
 yarn run my-release
 ```
-
-### Check tag
-
-The must be a new tag, like `v3.1.1-1`.
 
 ### Create release
 
