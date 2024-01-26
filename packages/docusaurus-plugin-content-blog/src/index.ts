@@ -369,7 +369,7 @@ export default async function pluginContentBlog(
         }
       });
 
-      chronologyRecords.forEach((record) => logger.info(record));
+      // chronologyRecords.forEach((record) => logger.info(record));
 
       setGlobalData({
         chronologyRecords,
