@@ -12,7 +12,9 @@ The enhancements are listed below.
 
 For blogs with multiple authors, it is useful to view the pages contributed by each author.
 
-Similarly to the Tags grouping pages, pages to group posts by authors can be generated added.
+Similarly to the Tags grouping pages, pages to group posts by authors can be generated.
+
+![authors](./images/authors.png)
 
 A new configuration option `generateAuthorsPages` was added; when set to true, the authors pages are generated as `blog/authors` and `blog/authors/${name}`.
 
