@@ -36,12 +36,6 @@ The mechanism of computing the last updated time based on the latest git commit 
 
 When enabled, the last update time is displayed below the post and also used when sorting the posts in the feed files.
 
-## Add `pageBasePath` to blog plugin configuration
-
-In Docusaurus the components used to compose the paths are configurable via options like `routeBasePath`, `tagsBasePath`, etc, but in the path used for multi-page lists, the URL was hard-coded as `page`.
-
-For consistency reasons, a new configuration option was added, `pageBasePath`, allowing to also configure these paths, a feature useful for example when all paths are translated to local languages.
-
 ## Hide redundant year in dates shown in the Archive page
 
 In the Archive page, when listing the the post titles grouped by years, there is not need to show the year again, since it is redundant.
@@ -75,6 +69,12 @@ event_end_date: '1994-11-08'
 To enable this feature, a new configuration option `sortPostsByEventDate` was added; when set to true, the event dates are parsed, and, if present, these dates are used when sorting the posts in the Archive page, so the past events are located when they happened, not when they were entered in the blog.
 
 ![event](./images/event-year-only.png)
+
+## Add `pageBasePath` to blog plugin configuration
+
+In Docusaurus the components used to compose the paths are configurable via options like `routeBasePath`, `tagsBasePath`, etc, but in the path used for multi-page lists, the URL was hard-coded as `page`.
+
+For consistency reasons, a new configuration option was added, `pageBasePath`, allowing to also configure these paths, a feature useful for example when all paths are translated to local languages.
 
 ---
 
