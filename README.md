@@ -1,6 +1,6 @@
 # Docusaurus fork
 
-This is a fork of the [facebook/docusaurus.git](https://github.com/facebook/docusaurus) project.
+This is a fork of the [facebook/docusaurus.git](https://github.com/facebook/docusaurus) project, with several enhancements for blogs with historical content.
 
 The updated code is in the `development` branch, while the original code remains in the `main` branch.
 
@@ -12,29 +12,29 @@ The enhancements are listed below.
 
 For blogs with multiple authors, it is useful to view the pages contributed by each author.
 
-Similarly to the Tags grouping pages, pages to group posts by authors can be generated.
+Similarly to the Tags grouping pages, pages to group posts by authors can now be generated.
 
 ![authors](./images/authors.png)
 
-Links to authors are also added at the bottom of the post, as are links to tags:
+Links to authors are also added at the bottom of the posts, after the links to tags:
 
 ![authors2](./images/authors2.png)
 
 A new configuration option `generateAuthorsPages` was added; when set to true, the authors pages are generated as `blog/authors` and `blog/authors/${name}`.
 
-Note: Docusaurus allows to define authors identified by a picture, without having to enter a name; these un-named authors are filtered out and not indexed in the Authors pages.
+Note: Docusaurus allows to define authors identified by a picture, without having to enter the name; these nameless authors are filtered out and not indexed in the Authors pages.
 
 ## Add `showLastUpdateTime` and `showLastUpdateAuthor` to blog posts
 
-In some cases, for example sites with research data, the content of the posts is expected to be updated in time, as new data is discovered.
+In some cases, for example sites with research data, the content of the posts is expected to be updated from time to time, as new data is discovered.
 
-To help users identify updated content, it is useful to know the last updated time and provide a way to order post by it.
+To help users identify the updated content, it is useful to know the last updated time and provide a way to order post by it.
 
-![last-updated](./images/last-updated.png)
-
-The mechanism of computing the last updated time based on the latest git commit time, is already used for docs; the same mechanism was also added to blog posts, using the same configuration options, `showLastUpdateTime` and `showLastUpdateAuthor`.
+The mechanism of computing the last updated time is based on the latest git commit time, similarly to the mechanism used for docs; it is enabled by the same configuration options, `showLastUpdateTime` and `showLastUpdateAuthor`.
 
 When enabled, the last update time is displayed below the post and also used when sorting the posts in the feed files.
+
+![last-updated](./images/last-updated.png)
 
 ## Hide redundant year in dates shown in the Archive page
 
@@ -46,11 +46,11 @@ For aesthetic reasons, a new configuration option `hidePostYearInArchive` was ad
 
 ## Improve support for posts related to events in the past
 
-The common use case for blogs is to document recent events, for which the post date and the event date are the same.
+The common use case for blogs is to document recent events; in other words, the post date and the event date are more or less the same.
 
-For blogs documenting historical events, the post date can follow the same rule and remain in the present, but the event date should be entered as a separate frontMatter string property.
+For blogs documenting historical events, the post date remains in the present, as for regular posts, but the event date is in the past, and should be entered as a separate frontMatter string property.
 
-Since some historical events do not have an exact date, this property can be incomplete, without day or even month, for example:
+Since some historical events do not have an exact date, this property can be incomplete, without day or even without month, for example:
 
 ```txt
 event_date: '1994'
@@ -66,15 +66,15 @@ event_end_date: '1994-12'
 event_end_date: '1994-11-08'
 ```
 
-To enable this feature, a new configuration option `sortPostsByEventDate` was added; when set to true, the event dates are parsed, and, if present, these dates are used when sorting the posts in the Archive page, so the past events are located when they happened, not when they were entered in the blog.
+To enable this feature, a new configuration option `sortPostsByEventDate` was added; when set to true, the event dates are parsed and used when sorting the posts in the Archive page, so the years of past events are located at the end.
 
 ![event](./images/event-year-only.png)
 
 ## Add `pageBasePath` to blog plugin configuration
 
-In Docusaurus the URL parts used to compose the pages paths are configurable via options like `routeBasePath`, `tagsBasePath`, etc, but in the path used for multi-page lists, the URL was hard-coded as `page`.
+In Docusaurus, the URL parts used to compose the pages paths are configurable via options like `routeBasePath`, `tagsBasePath`, etc, but in the path used for multi-page lists, a part of the URL is hard-coded as `page`.
 
-For consistency reasons, a new configuration option was added, `pageBasePath`, allowing to also configure these paths, a feature useful for example when all paths are translated to local languages.
+For consistency reasons, a new configuration option was added, `pageBasePath`, allowing to also configure this path, a feature useful for example when all paths are translated to local languages.
 
 ---
 
