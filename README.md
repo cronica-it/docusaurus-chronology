@@ -16,6 +16,10 @@ Similarly to the Tags grouping pages, pages to group posts by authors can be gen
 
 ![authors](./images/authors.png)
 
+Links to authors are also added at the bottom of the post, as are links to tags:
+
+![authors2](./images/authors2.png)
+
 A new configuration option `generateAuthorsPages` was added; when set to true, the authors pages are generated as `blog/authors` and `blog/authors/${name}`.
 
 Note: Docusaurus allows to define authors identified by a picture, without having to enter a name; these un-named authors are filtered out and not indexed in the Authors pages.
@@ -25,6 +29,8 @@ Note: Docusaurus allows to define authors identified by a picture, without havin
 In some cases, for example sites with research data, the content of the posts is expected to be updated in time, as new data is discovered.
 
 To help users identify updated content, it is useful to know the last updated time and provide a way to order post by it.
+
+![last-updated](./images/last-updated.png)
 
 The mechanism of computing the last updated time based on the latest git commit time, is already used for docs; the same mechanism was also added to blog posts, using the same configuration options, `showLastUpdateTime` and `showLastUpdateAuthor`.
 
@@ -39,6 +45,8 @@ For consistency reasons, a new configuration option was added, `pageBasePath`, a
 ## Hide redundant year in dates shown in the Archive page
 
 In the Archive page, when listing the the post titles grouped by years, there is not need to show the year again, since it is redundant.
+
+![hide-year](./images/hide-year.png)
 
 For aesthetic reasons, a new configuration option `hidePostYearInArchive` was added; when set to true, the date format is adjusted to no longer show the year.
 
@@ -65,6 +73,8 @@ event_end_date: '1994-11-08'
 ```
 
 To enable this feature, a new configuration option `sortPostsByEventDate` was added; when set to true, the event dates are parsed, and, if present, these dates are used when sorting the posts in the Archive page, so the past events are located when they happened, not when they were entered in the blog.
+
+![event](./images/event-year-only.png)
 
 ---
 
