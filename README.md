@@ -72,7 +72,7 @@ To enable this feature, a new configuration option `sortPostsByEventDate` was ad
 
 ## Add `pageBasePath` to blog plugin configuration
 
-In Docusaurus the components used to compose the paths are configurable via options like `routeBasePath`, `tagsBasePath`, etc, but in the path used for multi-page lists, the URL was hard-coded as `page`.
+In Docusaurus the URL parts used to compose the pages paths are configurable via options like `routeBasePath`, `tagsBasePath`, etc, but in the path used for multi-page lists, the URL was hard-coded as `page`.
 
 For consistency reasons, a new configuration option was added, `pageBasePath`, allowing to also configure these paths, a feature useful for example when all paths are translated to local languages.
 
