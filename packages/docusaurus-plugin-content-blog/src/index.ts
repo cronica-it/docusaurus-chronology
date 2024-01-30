@@ -19,6 +19,7 @@ import {
   getDataFilePath,
   DEFAULT_PLUGIN_ID,
 } from '@docusaurus/utils';
+import {applyTrailingSlash} from '@docusaurus/utils-common';
 import {
   generateBlogPosts,
   getSourceToPermalink,
@@ -358,10 +359,15 @@ export default async function pluginContentBlog(
       const chronologyRecords: ChronologyRecord[] = [];
       blogPosts.forEach((post) => {
         if (post.metadata.eventDateRangeFormatted) {
+          const postLink = applyTrailingSlash(post.metadata.permalink, {
+            trailingSlash: siteConfig.trailingSlash,
+            baseUrl,
+          });
+          // logger.info(postLink);
           chronologyRecords.push({
             eventDateRange: post.metadata.eventDateRangeFormatted,
             title: post.metadata.title,
-            permalink: post.metadata.permalink,
+            permalink: postLink,
             isInternational:
               post.metadata.frontMatter?.tags?.includes('international') ||
               false,
@@ -434,7 +440,6 @@ export default async function pluginContentBlog(
       // ----------------------------------------------------------------------
 
       // Authors.
-
       async function createNamedAuthorsListPage() {
         const authorsPropPath = await createData(
           `${docuHash(`${blogAuthorsListPath}-authors`)}.json`,
