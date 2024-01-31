@@ -57,6 +57,7 @@ export const DEFAULT_OPTIONS: PluginOptions = {
   showLastUpdateTime: false,
   showLastUpdateAuthor: false,
   sortPostsByEventDate: false,
+  sortSidebarByLastUpdate: false,
   hidePostYearInArchive: false,
   generateAuthorsPages: false,
 };
@@ -155,6 +156,9 @@ const PluginOptionSchema = Joi.object<PluginOptions>({
   ),
   sortPostsByEventDate: Joi.bool().default(
     DEFAULT_OPTIONS.sortPostsByEventDate,
+  ),
+  sortSidebarByLastUpdate: Joi.bool().default(
+    DEFAULT_OPTIONS.sortSidebarByLastUpdate,
   ),
   hidePostYearInArchive: Joi.bool().default(
     DEFAULT_OPTIONS.hidePostYearInArchive,

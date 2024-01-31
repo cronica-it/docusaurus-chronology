@@ -504,6 +504,8 @@ yarn workspace v1.22.19image` is a collocated image path, this entry will be the
     showLastUpdateAuthor?: boolean;
     /**	Whether to sort posts by `event_date`. */
     sortPostsByEventDate?: boolean;
+    /**	Whether to sort the sidebar entries by creation/modification date. */
+    sortSidebarByLastUpdate?: boolean;
     /** Whether to do not show redundant year in Archive grouping. */
     hidePostYearInArchive?: boolean;
     /** Whether to generate the Authors grouping pages. */

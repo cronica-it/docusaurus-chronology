@@ -237,6 +237,7 @@ export default async function pluginContentBlog(
       const {
         blogSidebarTitle,
         blogPosts,
+        blogPostsNewest,
         blogListPaginated,
         blogTags,
         blogTagsListPath,
@@ -248,10 +249,13 @@ export default async function pluginContentBlog(
 
       const blogItemsToMetadata: {[postId: string]: BlogPostMetadata} = {};
 
+      const sidebarAllBlogPosts = options.sortSidebarByLastUpdate
+        ? blogPostsNewest
+        : blogPosts;
       const sidebarBlogPosts =
         options.blogSidebarCount === 'ALL'
-          ? blogPosts
-          : blogPosts.slice(0, options.blogSidebarCount);
+          ? sidebarAllBlogPosts
+          : sidebarAllBlogPosts.slice(0, options.blogSidebarCount);
 
       function blogPostItemsModule(items: string[]) {
         return items.map((postId) => {
