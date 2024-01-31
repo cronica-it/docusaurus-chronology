@@ -11,7 +11,10 @@ import logger from '@docusaurus/logger';
 import {Feed, type Author as FeedAuthor} from 'feed';
 import * as srcset from 'srcset';
 import {normalizeUrl, readOutputHTMLFile} from '@docusaurus/utils';
-import {blogPostContainerID} from '@docusaurus/utils-common';
+import {
+  applyTrailingSlash,
+  blogPostContainerID,
+} from '@docusaurus/utils-common';
 import {load as cheerioLoad} from 'cheerio';
 import type {DocusaurusConfig} from '@docusaurus/types';
 import type {
@@ -55,7 +58,10 @@ async function generateBlogFeed({
     title: feedOptions.title ?? `${title} Blog`,
     updated,
     language: feedOptions.language ?? locale,
-    link: blogBaseUrl,
+    link: applyTrailingSlash(blogBaseUrl, {
+      trailingSlash: siteConfig.trailingSlash,
+      baseUrl,
+    }),
     description: feedOptions.description ?? `${siteConfig.title} Blog`,
     favicon: favicon ? normalizeUrl([siteUrl, baseUrl, favicon]) : undefined,
     copyright: feedOptions.copyright,
@@ -85,7 +91,7 @@ async function defaultCreateFeedItems({
   siteConfig: DocusaurusConfig;
   outDir: string;
 }): Promise<BlogFeedItem[]> {
-  const {url: siteUrl} = siteConfig;
+  const {url: siteUrl, baseUrl} = siteConfig;
 
   function toFeedAuthor(author: Author): FeedAuthor {
     return {name: author.name, link: author.url, email: author.email};
@@ -145,7 +151,10 @@ async function defaultCreateFeedItems({
       const feedItem: BlogFeedItem = {
         title: metadataTitle,
         id: blogPostAbsoluteUrl,
-        link: blogPostAbsoluteUrl,
+        link: applyTrailingSlash(blogPostAbsoluteUrl, {
+          trailingSlash: siteConfig.trailingSlash,
+          baseUrl,
+        }),
         date,
         description,
         // Atom feed demands the "term", while other feeds use "name"
