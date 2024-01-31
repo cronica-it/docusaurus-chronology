@@ -4,7 +4,13 @@
 
 ### Update the VERSION file
 
-The format is `3.1.1-1`.
+The format is `3.1.1-2`.
+
+### Update the README-MAINTAINER
+
+Update the version in this file.
+
+Commit and push the new version.
 
 ### Bump version
 
