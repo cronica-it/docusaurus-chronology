@@ -36,6 +36,12 @@ When enabled, the last update time is displayed below the post and also used whe
 
 ![last-updated](./images/last-updated.png)
 
+## Add `sortSidebarByLastUpdate` to sidebar
+
+When posts are edited and the retrieving the date of the last update is enabled, it also makes sense to show the updated posts in the top of the sidebar list.
+
+A new configuration option `sortSidebarByLastUpdate` was added; when set to true, the sidebar list is sorted by the last update time, when available.
+
 ## Hide redundant year in dates shown in the Archive page
 
 In the Archive page, when listing the the post titles grouped by years, there is not need to show the year again, since it is redundant.
@@ -75,6 +81,12 @@ To enable this feature, a new configuration option `sortPostsByEventDate` was ad
 In Docusaurus, the URL parts used to compose the pages paths are configurable via options like `routeBasePath`, `tagsBasePath`, etc, but in the path used for multi-page lists, a part of the URL is hard-coded as `page`.
 
 For consistency reasons, a new configuration option was added, `pageBasePath`, allowing to also configure this path, a feature useful for example when all paths are translated to local languages.
+
+## Apply `applyTrailingSlash` to feed URLs
+
+The `trailingSlash` configuration is available to customize the presence/absence of a trailing slash at the end of URLs; unfortunately this setting does not apply to the links generated in the feed files, and tools like Algolia that use the files may behave unusual.
+
+Thus, the `applyTrailingSlash` function is called to conditionally adjust the URLs generated in the feed files.
 
 ---
 
