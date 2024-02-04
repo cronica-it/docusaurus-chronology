@@ -36,7 +36,7 @@ When enabled, the last update time is displayed below the post and also used whe
 
 ![last-updated](./images/last-updated.png)
 
-## Add `sortSidebarByLastUpdate` to sidebar
+## Add `sortSidebarByLastUpdate` to change the order in the sidebar
 
 When posts are edited and the retrieving the date of the last update is enabled, it also makes sense to show the updated posts in the top of the sidebar list.
 
