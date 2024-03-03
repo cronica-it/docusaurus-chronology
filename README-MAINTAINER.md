@@ -4,7 +4,7 @@
 
 ### Update the VERSION file
 
-The format is `3.1.1-3`.
+The format is `3.1.1-4`.
 
 ### Update the README-MAINTAINER
 
