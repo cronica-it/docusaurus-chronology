@@ -37,7 +37,7 @@ const parseEventDate = ({
     date = new Date(
       Date.UTC(
         dateParts[0] as number,
-        dateParts[1] as number,
+        (dateParts[1] as number) - 1, // 0 - 11!
         dateParts[2],
         12, // noon
         0,
@@ -50,11 +50,27 @@ const parseEventDate = ({
     Number.isInteger(dateParts[1])
   ) {
     date = new Date(
-      Date.UTC(dateParts[0] as number, dateParts[1] as number, 15, 12, 0, 0),
+      Date.UTC(
+        dateParts[0] as number,
+        (dateParts[1] as number) - 1, // 0 - 11!
+        15, // middle of the month
+        12,
+        0,
+        0,
+      ),
     );
     date.setFullYear(year);
   } else if (dateParts.length === 1 && Number.isInteger(dateParts[0])) {
-    date = new Date(Date.UTC(dateParts[0] as number, 7, 1, 12, 0, 0));
+    date = new Date(
+      Date.UTC(
+        dateParts[0] as number,
+        7 - 1, // 0 - 11!, July 1st
+        1,
+        12,
+        0,
+        0,
+      ),
+    );
   } else {
     // Last resort, try to parse as standard date. (local time!)
     date = new Date(frontMatterEventDate);
