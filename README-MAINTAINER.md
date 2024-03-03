@@ -32,7 +32,7 @@ yarn run my-release
 
 ### Create release
 
-In the [Releases](https://github.com/cronica-it/docusaurus-fork/releases) page, add a new release.
+In the [Releases](https://github.com/cronica-it/docusaurus-chronology/releases) page, add a new release.
 
 Attach all archives in the `release` folder.
 
